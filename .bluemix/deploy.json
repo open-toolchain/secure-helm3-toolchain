@@ -49,7 +49,7 @@
         },
         "prod-region": {
             "description": {
-                "$ref": "#/messages/deploy.region"
+                "$ref": "#/messages/region"
             },
             "type": "string",
             "disabled": false,
