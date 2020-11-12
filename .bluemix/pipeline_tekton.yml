@@ -38,15 +38,9 @@ inputs:
     path: utils
 triggers:
   - type: manual
-    name: Manual Trigger
+    name: manual-run
     eventListener: manual-run
-    properties:
-      - type: text
-        name: branch
-        value: master
-      - type: text
-        name: repository
-        value: ${APP_REPO_FULL}
+    properties: []
   - type: git
     name: commit-push
     eventListener: ${GIT_COMMIT_EVENT_LISTENER_NAME}
