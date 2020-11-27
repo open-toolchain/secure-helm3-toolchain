@@ -6,29 +6,15 @@ metadata:
 spec:
   params:
     - name: repository
-      description: the git repo containing source code. If empty, the repository url will be found from toolchain
-      default: ""
+      description: the git repo
     - name: branch
       description: the branch for the git repo
       default: "master"
     - name: revision
       description: the git revision/commit for the git repo
       default: ""
-    - name: fail-on-lint-errors
-      description: force failure of task when docker lint errors are found
-      default: "true"
-    - name: fail-on-scanned-issues
-      description: force failure of task when vulnerability advisor scan issues are found
-      default: "true"
-    - name: path-to-context
-      default: "."
     - name: path-to-dockerfile
-      default: "."
-    - name: dockerfile
-      default: "Dockerfile"
-    - name: build-args
-      description: ibmcloud cr build argument list in the format 'KEY=VALUE' with a key-value pair per line.
-      default: ""
+      default: '.'
     - name: registry-region
       description: The IBM Cloud region for image registry
     - name: registry-namespace
@@ -37,9 +23,6 @@ spec:
       description: application name
     - name: image-name
       description: image name
-    - name: deployment-file
-      description: file containing the kubernetes deployment definition
-      default: "deployment.yml"
     - name: dev-region
     - name: dev-resource-group
     - name: cluster-name
@@ -48,6 +31,12 @@ spec:
       description: the namespace
     - name: pipeline-debug
       default: "0"
+    - name: pr-url
+      description: pr url
+    - name: commit-timestamp
+    - name: scm-type
+    - name: project-id
+      default: ""
   workspaces:
     - name: pipeline-ws
   tasks:
@@ -59,7 +48,7 @@ spec:
           # if a params.repository is given, it takes precedence
           value: '. as $toolchain | ["$(params.repository)"] | if .[0]=="" then $toolchain | .services[] | select(.toolchain_binding.name=="repo") | .dashboard_url else .[0] end'
         - name: pipeline-debug
-          value: $(params.pipeline-debug)  
+          value: $(params.pipeline-debug)
     - name: git-clone
       taskRef:
         name: git-clone-repo
@@ -112,14 +101,12 @@ spec:
       taskRef:
         name: linter-docker-lint
       params:
-        - name: path-to-dockerfile
-          value: $(params.path-to-dockerfile)
-        - name: dockerfile
-          value: $(params.dockerfile)
-        - name: fail-on-lint-errors
-          value: $(params.fail-on-lint-errors)
+        # - name: hadolint-ignored-rules
+        #   value: "DL3017,DL3020,DL3003"
         - name: pipeline-debug
           value: $(params.pipeline-debug)
+        - name: fail-on-lint-errors
+          value: "false"
       workspaces:
         - name: workspace
           workspace: pipeline-ws
