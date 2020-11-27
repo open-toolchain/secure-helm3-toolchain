@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
-  name: trigger-template-simple-helm
+  name: trigger-template-secure-helm
 spec:
   params:
     - name: repository
@@ -53,7 +53,7 @@ spec:
     - apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
-        name: simple-helm-$(uid)-pvc
+        name: secure-helm-$(uid)-pvc
       spec:
         resources:
           requests:
@@ -64,10 +64,10 @@ spec:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
       metadata:
-        name: simple-helm-$(uid)
+        name: secure-helm-$(uid)
       spec:
         pipelineRef:
-          name: simple-helm-pipeline
+          name: secure-helm-pipeline
         params:
           - name: repository
             value: $(params.repository)
@@ -110,7 +110,7 @@ spec:
         workspaces:
           - name: pipeline-ws
             persistentVolumeClaim:
-              claimName: simple-helm-$(uid)-pvc
+              claimName: secure-helm-$(uid)-pvc
 ---
 apiVersion: tekton.dev/v1beta1
 kind: TriggerBinding
@@ -128,7 +128,7 @@ spec:
     - binding:
         name: trigger-binding-manual
       template:
-        name: trigger-template-simple-helm
+        name: trigger-template-secure-helm
 ---
 apiVersion: tekton.dev/v1beta1
 kind: TriggerBinding
@@ -152,7 +152,7 @@ spec:
     - binding:
         name: github-commit
       template:
-        name: trigger-template-simple-helm
+        name: trigger-template-secure-helm
 ---
 apiVersion: tekton.dev/v1beta1
 kind: TriggerBinding
@@ -176,7 +176,7 @@ spec:
     - binding:
         name: grit-or-gitlab-commit
       template:
-        name: trigger-template-simple-helm
+        name: trigger-template-secure-helm
 ---
 apiVersion: tekton.dev/v1beta1
 kind: TriggerBinding
@@ -200,4 +200,4 @@ spec:
     - binding:
         name: bitbucket-commit
       template:
-        name: trigger-template-simple-helm
+        name: trigger-template-secure-helm
